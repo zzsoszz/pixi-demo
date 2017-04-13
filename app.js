@@ -106,8 +106,16 @@
 				this.renderer.render(this.stage);
 			},
 			loadAssets: function() {
-				var loader = PIXI.loader.add('assets/interface.json')
+				var loader ;
+				if(defaults.dpr>1.2){
+					loader = PIXI.loader.add('assets/2x/interface.json')
 							.on("progress", this.loadProgressHandler.bind(this));
+				}
+				else
+				{
+					loader = PIXI.loader.add('assets/interface.json')
+							.on("progress", this.loadProgressHandler.bind(this));
+				}
             	loader.load(this.onLoadAssets.bind(this));
 			},
 			onLoadAssets: function() {
