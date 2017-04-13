@@ -27,7 +27,8 @@
 				canvasSize: {
 					x:640,
 					y:690
-				}
+				},
+				dpr:window.devicePixelRatio
 			};
 
 		// The actual plugin constructor
@@ -57,7 +58,47 @@
 
 				//start animation ticker
 				window.requestAnimationFrame(this.animate.bind(this));
+				
+				$(window).on("resize deviceOrientation",this.rendererResize.bind(this));
+
+				$(window).trigger("resize");
+
 				this.loadAssets();
+
+			},
+			rendererResize:function(){
+				//create target scale
+				var targetScale=1;
+				//if dpr is greater than  1.2
+				//load and scale everyting based on a dpr of 2
+
+				if(defaults.dpr>1.2)
+				{
+					defaults.dpr=2;
+				}
+				var cv=defaults.canvasSize;
+				var ih=$(window).innerHeight();
+				var iw=$(window).innerWidth();
+				var new_w=iw/cv.x;
+				var new_h=ih/cv.y;
+
+				if(new_h>1 && new_w>1)
+				{
+					targetScale=1;
+				}else{
+					if(new_h>new_w)
+					{
+						targetScale=new_w;
+					}else{
+						targetScale=new_h;
+					}
+				}
+				var w=targetScale*cv.x;
+				var h=targetScale*cv.y;
+
+				this.renderer.resize(w,h);
+				console.log(defaults.dpr);
+				this.scene.scale.x=this.scene.scale.y=targetScale/defaults.dpr;
 
 			},
 			animate: function() {
